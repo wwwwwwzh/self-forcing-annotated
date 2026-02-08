@@ -112,8 +112,6 @@ class SelfForcingModel(BaseModel):
         Input:
             - image_or_video_shape: a list containing the shape of the image or video [B, F, C, H, W].
             - conditional_dict: a dictionary containing the conditional information (e.g. text embeddings, image embeddings).
-            - unconditional_dict: a dictionary containing the unconditional information (e.g. null/negative text embeddings, null/negative image embeddings).
-            - clean_latent: a tensor containing the clean latents [B, F, C, H, W]. Need to be passed when no backward simulation is used.
             - initial_latent: a tensor containing the initial latents [B, F, C, H, W].
         Output:
             - pred_image: a tensor with shape [B, F, C, H, W].

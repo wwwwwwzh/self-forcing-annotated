@@ -50,10 +50,7 @@ class CausalDiffusion(BaseModel):
         initial_latent: torch.Tensor = None
     ) -> Tuple[torch.Tensor, dict]:
         """
-        Generate image/videos from noise and compute the DMD loss.
-        The noisy input to the generator is backward simulated.
-        This removes the need of any datasets during distillation.
-        See Sec 4.5 of the DMD2 paper (https://arxiv.org/abs/2405.14867) for details.
+        Teacher Forcing
         Input:
             - image_or_video_shape: a list containing the shape of the image or video [B, F, C, H, W].
             - conditional_dict: a dictionary containing the conditional information (e.g. text embeddings, image embeddings).

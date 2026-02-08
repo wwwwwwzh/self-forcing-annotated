@@ -193,12 +193,13 @@ class SelfForcingTrainingPipeline:
                         )
                     break
 
+            # generated one new complete block
             # Step 3.2: record the model's output
             output[:, current_start_frame:current_start_frame + current_num_frames] = denoised_pred
 
             # Step 3.3: rerun with timestep zero to update the cache
             context_timestep = torch.ones_like(timestep) * self.context_noise
-            # add context noise
+            # add context noise default to 0
             denoised_pred = self.scheduler.add_noise(
                 denoised_pred.flatten(0, 1),
                 torch.randn_like(denoised_pred.flatten(0, 1)),

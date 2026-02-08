@@ -191,18 +191,18 @@ class CausalWanSelfAttention(nn.Module):
                     block_mask=block_mask
                 )[:, :, :-padded_length].transpose(2, 1)
         else:
-            frame_seqlen = math.prod(grid_sizes[0][1:]).item()
-            current_start_frame = current_start // frame_seqlen
+            frame_seqlen = math.prod(grid_sizes[0][1:]).item() # 1560
+            current_start_frame = current_start // frame_seqlen # 0
             roped_query = causal_rope_apply(
                 q, grid_sizes, freqs, start_frame=current_start_frame).type_as(v)
             roped_key = causal_rope_apply(
                 k, grid_sizes, freqs, start_frame=current_start_frame).type_as(v)
 
-            current_end = current_start + roped_query.shape[1]
-            sink_tokens = self.sink_size * frame_seqlen
+            current_end = current_start + roped_query.shape[1] # 3
+            sink_tokens = self.sink_size * frame_seqlen # 0
             # If we are using local attention and the current KV cache size is larger than the local attention size, we need to truncate the KV cache
-            kv_cache_size = kv_cache["k"].shape[1]
-            num_new_tokens = roped_query.shape[1]
+            kv_cache_size = kv_cache["k"].shape[1] # kv_cache_size
+            num_new_tokens = roped_query.shape[1] # 3
             if self.local_attn_size != -1 and (current_end > kv_cache["global_end_index"].item()) and (
                     num_new_tokens + kv_cache["local_end_index"].item() > kv_cache_size):
                 # Calculate the number of new tokens added in this step
@@ -913,15 +913,15 @@ class CausalWanModel(ModelMixin, ConfigMixin):
         x = [self.patch_embedding(u.unsqueeze(0)) for u in x]
 
         grid_sizes = torch.stack(
-            [torch.tensor(u.shape[2:], dtype=torch.long) for u in x])
-        x = [u.flatten(2).transpose(1, 2) for u in x]
+            [torch.tensor(u.shape[2:], dtype=torch.long) for u in x]) # [F//patch_size, H//patch_size, W//patch_size]*B
+        x = [u.flatten(2).transpose(1, 2) for u in x] # [B, F*H*W//patch_size^3, dim]
 
         seq_lens = torch.tensor([u.size(1) for u in x], dtype=torch.long)
         assert seq_lens.max() <= seq_len
         x = torch.cat([
             torch.cat([u, u.new_zeros(1, seq_lens[0] - u.size(1), u.size(2))],
                       dim=1) for u in x
-        ])
+        ]) # pad to the max seq len in the batch, shape [B, seq_len, dim]
 
         # time embeddings
         # with amp.autocast(dtype=torch.float32):

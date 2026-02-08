@@ -218,7 +218,7 @@ class CausVid(BaseModel):
 
             simulated_noisy_input.append(noisy_image)
 
-        simulated_noisy_input = torch.stack(simulated_noisy_input, dim=1)
+        simulated_noisy_input = torch.stack(simulated_noisy_input, dim=1) # [B, 4, F, C, H, W]
 
         # Step 2: Randomly sample a timestep and pick the corresponding input
         index = self._get_timestep(
@@ -228,7 +228,7 @@ class CausVid(BaseModel):
             image_or_video_shape[1],
             self.num_frame_per_block,
             uniform_timestep=False
-        )
+        ) # [B, F] each element is in [0, 3]
 
         # select the corresponding timestep's noisy input from the stacked tensor [B, T, F, C, H, W]
         noisy_input = torch.gather(
