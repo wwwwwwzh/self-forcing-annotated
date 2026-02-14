@@ -1,0 +1,63 @@
+trainer: hybrid
+
+# ODE-based hybrid forcing
+# Use precomputed ODE latents with 4 denoising steps (t=0 is last index)
+denoising_steps: &steps
+  - 1000
+  - 750
+  - 500
+  - 250
+
+denoising_step_list: *steps
+warp_denoising_step: true
+num_train_timestep: 1000
+
+timestep_shift: 5.0
+guidance_scale: 3.0
+
+denoising_loss_type: flow
+mixed_precision: true
+seed: 0
+
+# Hybrid forcing split (must be multiple of num_frame_per_block)
+hybrid_context_blocks: 6
+num_frame_per_block: 3
+
+# Training
+batch_size: 1
+lr: 2.0e-06
+beta1: 0.0
+beta2: 0.999
+weight_decay: 0.01
+ema_weight: 0.99
+ema_start_step: 200
+log_iters: 50
+
+# FSDP
+sharding_strategy: hybrid_full
+generator_fsdp_wrap_strategy: size
+text_encoder_fsdp_wrap_strategy: size
+
+# Data
+load_raw_video: false
+# LMDB should contain ode_latent
+data_path: prompts/vidprom_filtered_extended.txt
+
+# Model
+model_kwargs:
+  timestep_shift: 5.0
+
+# Logging
+wandb_host: WANDB_HOST
+wandb_key: WANDB_KEY
+wandb_entity: WANDB_ENTITY
+wandb_project: WANDB_PROJECT
+negative_prompt: '色调艳丽，过曝，静态，细节模糊不清，字幕，风格，作品，画作，画面，静止，整体发灰，最差质量，低质量，JPEG压缩残留，丑陋的，残缺的，多余的手指，画得不好的手部，画得不好的脸部，畸形的，毁容的，形态畸形的肢体，手指融合，静止不动的画面，杂乱的背景，三条腿，背景人很多，倒着走'
+
+# Shape
+image_or_video_shape:
+  - 1
+  - 21
+  - 16
+  - 60
+  - 104

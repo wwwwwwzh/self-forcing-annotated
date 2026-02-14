@@ -1004,8 +1004,10 @@ class CausalWanModel(ModelMixin, ConfigMixin):
         **kwargs
     ):
         if kwargs.get('kv_cache', None) is not None:
+            print("Running inference with kv cache")
             return self._forward_inference(*args, **kwargs)
         else:
+            print("Running training forward")
             return self._forward_train(*args, **kwargs)
 
     def unpatchify(self, x, grid_sizes):

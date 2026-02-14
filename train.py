@@ -3,7 +3,7 @@ import os
 from omegaconf import OmegaConf
 import wandb
 
-from trainer import DiffusionTrainer, GANTrainer, ODETrainer, ScoreDistillationTrainer
+from trainer import DiffusionTrainer, HybridTrainer, GANTrainer, ODETrainer, ScoreDistillationTrainer
 
 
 def main():
@@ -32,6 +32,8 @@ def main():
 
     if config.trainer == "diffusion":
         trainer = DiffusionTrainer(config)
+    elif config.trainer == "hybrid":
+        trainer = HybridTrainer(config)
     elif config.trainer == "gan":
         trainer = GANTrainer(config)
     elif config.trainer == "ode":

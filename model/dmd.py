@@ -39,7 +39,7 @@ class DMD(SelfForcingModel):
             self.real_guidance_scale = args.real_guidance_scale
             self.fake_guidance_scale = args.fake_guidance_scale
         else:
-            self.real_guidance_scale = args.guidance_scale
+            self.real_guidance_scale = args.guidance_scale # 3
             self.fake_guidance_scale = 0.0
         self.timestep_shift = getattr(args, "timestep_shift", 1.0)
         self.ts_schedule = getattr(args, "ts_schedule", True)
